@@ -5,3 +5,4 @@ plotly
 matplotlib
 seaborn
 st-gsheets-connection
+oauth2client
