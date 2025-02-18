@@ -2,14 +2,29 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 import plotly.express as px
+import pandas as pd
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
 
 st.set_page_config(page_title="KG DEI", page_icon=":bar_chart:", layout="wide")
 
-from streamlit_gsheets import GSheetsConnection
+# Function to fetch data from Google Sheets using gspread
+@st.cache_resource(ttl=86400)
+def fetch_data_sap():
+    secret_info = st.secrets["gsheets"]
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(secret_info, scope)
+    client = gspread.authorize(creds)
+    spreadsheet = client.open('0. Active Employee - Monthly Updated')
+    sheet = spreadsheet.sheet1
+    data = sheet.get_all_records()
+    df = pd.DataFrame(data)
+    return df
 
-# Create a connection object.
-conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read()
+# Fetch the data
+df = fetch_data_sap()
+
+
 
 # Replace NaN values in the 'layer' column with "N-A" for display and filtering purposes
 df['layer'] = df['layer'].fillna("N-A")
