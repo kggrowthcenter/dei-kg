@@ -77,6 +77,8 @@ if selected_generations and 'generation' in filtered_df.columns:
 if selected_religions and 'Religious Denomination Key' in filtered_df.columns:
     filtered_df = filtered_df[filtered_df['Religious Denomination Key'].isin(selected_religions)]
 
+filtered_df['Years'] = pd.to_numeric(filtered_df['Years'], errors='coerce')
+
 # For tenure, categorize 'Years' column and filter based on selected tenure groups
 bins = [-1, 1, 3, 6, 10, 15, 20, 25, float('inf')]
 labels = ['<1 Year', '1-3 Year', '4-6 Year', '6-10 Year', '11-15 Year', '16-20 Year', '20-25 Year', '>25 Year']
